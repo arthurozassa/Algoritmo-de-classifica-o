@@ -6,11 +6,16 @@
 # Banco origem Excel: dominios.xlsx
 # Destino TXT: resultado.txt
 
+import pandas as pd
+
+
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium import webdriver
 import time
 import xlrd
+from webdriver_manager.chrome import ChromeDriverManager
 
 print("Iniciando nosso robô...\n")
 arq = open("resultado.txt", "w", encoding="utf-8")
@@ -18,13 +23,14 @@ arq = open("resultado.txt", "w", encoding="utf-8")
 dominios = []
 
 # Abre e lê o Excel
-workbook = xlrd.open_workbook('dominios.xlsx')
-sheet = workbook.sheet_by_index(0)
+# workbook = xlrd.open_workbook('./dominios.xlsx')
+workbook = pd.read_excel('./dominios.xlsx', header=None)
 
-for linha in range(0, 4):   
-    dominios.append(sheet.cell_value(linha,0))
+dominios = workbook[0].values.tolist()
 
-driver = webdriver.Chrome(executable_path=r"C:\Users\CTC\OneDrive - Connectcom Teleinformatica\Área de Trabalho\RoboPython\Testes\raspatela\chromedriver.exe")
+
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
 driver.get("https://registro.br/")
 
 # dominios = ["uol.com.br", "wesleyteste.com.br", "globo.com.br"]
